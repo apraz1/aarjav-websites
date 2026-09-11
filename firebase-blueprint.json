@@ -1,0 +1,206 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account profile for partners and clients",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique user ID",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the user",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of the user",
+          "maxLength": 150
+        },
+        "contactNumber": {
+          "type": "string",
+          "description": "Contact phone number",
+          "maxLength": 20
+        },
+        "role": {
+          "type": "string",
+          "description": "Role in the portal",
+          "enum": ["partner", "client"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account creation timestamp"
+        }
+      },
+      "required": ["id", "name", "email", "contactNumber", "role", "createdAt"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Mortgage and loan lead record managed by partner",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the lead",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID of the partner who created this lead",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Name of the loan applicant",
+          "maxLength": 100
+        },
+        "clientEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Email of the loan applicant",
+          "maxLength": 150
+        },
+        "clientPhone": {
+          "type": "string",
+          "description": "Phone number of the loan applicant",
+          "maxLength": 25
+        },
+        "loanAmount": {
+          "type": "number",
+          "description": "Requested loan amount in INR"
+        },
+        "loanType": {
+          "type": "string",
+          "description": "Type of mortgage loan product",
+          "maxLength": 50
+        },
+        "propertyStatus": {
+          "type": "string",
+          "description": "Status of the property",
+          "maxLength": 50
+        },
+        "incomeType": {
+          "type": "string",
+          "description": "Income source (Salaried / Self-Employed)",
+          "maxLength": 50
+        },
+        "monthlyIncome": {
+          "type": "number",
+          "description": "Monthly verified income in INR"
+        },
+        "currentEmi": {
+          "type": "number",
+          "description": "Existing monthly EMIs in INR"
+        },
+        "status": {
+          "type": "string",
+          "description": "Workflow pipeline status of the lead",
+          "enum": ["Lead Created", "Documents Received", "File Logged", "Sanctioned", "Disbursed", "Rejected"]
+        },
+        "bankName": {
+          "type": "string",
+          "description": "Chosen lending bank or institution",
+          "maxLength": 100
+        },
+        "roi": {
+          "type": "number",
+          "description": "Interest rate offered"
+        },
+        "tenureYears": {
+          "type": "number",
+          "description": "Tenure of the loan in years"
+        },
+        "commissionRate": {
+          "type": "number",
+          "description": "Commission rate percentage for the partner"
+        },
+        "estimatedPayout": {
+          "type": "number",
+          "description": "Estimated payout in INR"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Case notes or updates",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "userId", "clientName", "loanAmount", "loanType", "status", "createdAt", "updatedAt"]
+    },
+    "BankProduct": {
+      "title": "BankProduct",
+      "description": "Mortgage loan product offered by partnered financial institutions",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique product code",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "bankName": {
+          "type": "string",
+          "description": "Bank or NBFC institution name",
+          "maxLength": 100
+        },
+        "minRoi": {
+          "type": "number",
+          "description": "Minimum annual interest rate"
+        },
+        "maxRoi": {
+          "type": "number",
+          "description": "Maximum annual interest rate"
+        },
+        "processingFee": {
+          "type": "string",
+          "description": "Processing fee terms and conditions",
+          "maxLength": 200
+        },
+        "maxTenureYears": {
+          "type": "number",
+          "description": "Maximum tenure in years"
+        },
+        "maxLtv": {
+          "type": "number",
+          "description": "Maximum Loan to Value ratio percentage"
+        },
+        "minLoanAmount": {
+          "type": "number",
+          "description": "Minimum loan amount in Lakhs"
+        }
+      },
+      "required": ["id", "bankName", "minRoi", "maxRoi", "processingFee", "maxTenureYears", "maxLtv", "minLoanAmount"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile collection storing partner and client accounts"
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Loan and mortgage leads generated and tracked by partners"
+    },
+    "/bankProducts/{productId}": {
+      "schema": "BankProduct",
+      "description": "Bank mortgage rate benchmarks and product terms"
+    }
+  }
+}

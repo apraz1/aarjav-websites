@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default-deny all operations
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidUser(data) {
+      return data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() > 0 && data.email.size() <= 150 &&
+             data.contactNumber is string && data.contactNumber.size() <= 20 &&
+             data.role in ['partner', 'client'] &&
+             data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidLead(data) {
+      return data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.clientName is string && data.clientName.size() > 0 && data.clientName.size() <= 100 &&
+             data.loanAmount is number && data.loanAmount > 0 &&
+             data.loanType is string && data.loanType.size() <= 50 &&
+             data.status in ['Lead Created', 'Documents Received', 'File Logged', 'Sanctioned', 'Disbursed', 'Rejected'] &&
+             data.createdAt is string && data.createdAt.size() <= 50 &&
+             data.updatedAt is string && data.updatedAt.size() <= 50;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId);
+      allow list: if isSignedIn() && (resource.data.id == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUser(incoming()) && incoming().id == userId;
+      allow update: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUser(incoming()) &&
+                       incoming().id == existing().id &&
+                       incoming().createdAt == existing().createdAt;
+      allow delete: if false;
+    }
+
+    // Leads Collection
+    match /leads/{leadId} {
+      allow get: if isSignedIn() && isValidId(leadId) && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(leadId) && incoming().userId == request.auth.uid &&
+                       isValidLead(incoming()) &&
+                       incoming().id == leadId;
+      allow update: if isSignedIn() && isValidId(leadId) && existing().userId == request.auth.uid &&
+                       incoming().userId == existing().userId &&
+                       isValidLead(incoming()) &&
+                       incoming().id == existing().id &&
+                       incoming().createdAt == existing().createdAt;
+      allow delete: if isSignedIn() && isValidId(leadId) && resource.data.userId == request.auth.uid;
+    }
+
+    // Bank Products Collection (Read-only catalog)
+    match /bankProducts/{productId} {
+      allow get, list: if true;
+      allow write: if false;
+    }
+  }
+}

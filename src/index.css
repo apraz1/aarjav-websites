@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-[#0B0D12] text-slate-100 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Luxury Metallic Gold Utilities matching Finstant Capital Logo */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFF6D6 0%, #F5D374 30%, #D4AF37 60%, #AA8220 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gold-subtle {
+  color: #D4AF37;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #E6C15C 0%, #D4AF37 50%, #A87E1C 100%);
+}
+
+.bg-gold-gradient:hover {
+  background: linear-gradient(135deg, #F0CE6E 0%, #DFBD48 50%, #B88B24 100%);
+}
+
+.bg-gold-subtle {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0.03) 100%);
+}
+
+.border-gold-subtle {
+  border-color: rgba(212, 175, 55, 0.22);
+}
+
+.border-gold-highlight {
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.gold-glow {
+  box-shadow: 0 0 30px -5px rgba(212, 175, 55, 0.25);
+}
+
+.gold-glow-sm {
+  box-shadow: 0 0 15px -3px rgba(212, 175, 55, 0.2);
+}
+
+/* Custom Gold Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0D12;
+}
+::-webkit-scrollbar-thumb {
+  background: #242935;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}

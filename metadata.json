@@ -1,0 +1,6 @@
+{
+  "name": "Finstant Capital",
+  "description": "Comprehensive bank rate comparator and digital mortgage loan portal for DSA agents, partners, and borrowers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
